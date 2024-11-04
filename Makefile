@@ -5,12 +5,17 @@ IMAGE_NAME := sample-app
 CONTAINER_NAME := flask-sample-app
 PORT := 8080
 
+pre-commit-install:
+	@chmod +x pre-commit
+	@cp pre-commit ./.git/hooks/
+	@echo "pre-commit installed"
+
 # Build the Docker image
 build:
 	docker build -t $(IMAGE_NAME) .
 
 # Run the Docker container
-run: build
+run: pre-commit-install build
 	docker run  --rm --name $(CONTAINER_NAME) -p $(PORT):8080 $(IMAGE_NAME) 
 
 # Stop the Docker container
