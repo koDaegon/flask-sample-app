@@ -1,0 +1,16 @@
+#!/bin/sh
+# Declare an empty array
+declare -a status
+echo "********************************************************************"
+echo "Testing secrets analysis before commit"
+echo "********************************************************************"
+# Find all the secrets in the repository
+git ls-files -z | xargs -0 detect-secrets-hook --baseline .secrets.baseline
+status["secrets"]=$?
+# Check status before commit
+if [[ "${status["secrets"]}" -ne 0 ]]; then
+echo "---> Some secrets were detected. Please remove them before committing."
+exit 1
+else
+echo "---> No secrets detected. Proceeding with commit."
+fi
